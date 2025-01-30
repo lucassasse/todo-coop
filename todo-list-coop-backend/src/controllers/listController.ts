@@ -102,3 +102,78 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error: "Erro ao buscar tarefas" });
   }
 };
+
+export const updateTaskStatus = (io: Server) => {
+  return async (req: Request, res: Response): Promise<void> => {
+    const { codigo, id } = req.params;
+
+    try {
+      // Verifica se a tarefa existe
+      const tarefa = await pool.query(
+        "SELECT id, lista_id, status FROM tarefas WHERE id = $1",
+        [id]
+      );
+
+      if (tarefa.rows.length === 0) {
+        res.status(404).json({ error: "Tarefa não encontrada" });
+        return;
+      }
+
+      const novoStatus = !tarefa.rows[0].status; // Inverte o status atual
+
+      // Atualiza o status da tarefa
+      await pool.query("UPDATE tarefas SET status = $1 WHERE id = $2", [
+        novoStatus,
+        id,
+      ]);
+
+      // Busca a lista atualizada de tarefas
+      const listaId = tarefa.rows[0].lista_id;
+      const tarefasAtualizadas = await pool.query(
+        "SELECT id, descricao, status FROM tarefas WHERE lista_id = $1 ORDER BY status ASC, id ASC",
+        [listaId]
+      );
+
+      // Notifica todos os clientes conectados a essa lista
+      io.to(codigo).emit("update_list", tarefasAtualizadas.rows);
+
+      res.status(200).json({ message: "Tarefa atualizada com sucesso" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao atualizar tarefa" });
+    }
+  };
+};
+
+export const deleteTask = (io: Server) => {
+  return async (req: Request, res: Response): Promise<void> => {
+    const { codigo, id } = req.params;
+
+    try {
+      // Verifica se a tarefa existe
+      const tarefa = await pool.query("SELECT lista_id FROM tarefas WHERE id = $1", [id]);
+
+      if (tarefa.rows.length === 0) {
+        res.status(404).json({ error: "Tarefa não encontrada" });
+        return;
+      }
+
+      const listaId = tarefa.rows[0].lista_id;
+
+      // Exclui a tarefa do banco de dados
+      await pool.query("DELETE FROM tarefas WHERE id = $1", [id]);
+
+      // Busca a lista atualizada de tarefas
+      const tarefasAtualizadas = await pool.query(
+        "SELECT id, descricao, status FROM tarefas WHERE lista_id = $1 ORDER BY status ASC, id ASC",
+        [listaId]
+      );
+
+      // Notifica todos os clientes conectados a essa lista
+      io.to(codigo).emit("update_list", tarefasAtualizadas.rows);
+
+      res.status(200).json({ message: "Tarefa excluída com sucesso" });
+    } catch (err) {
+      res.status(500).json({ error: "Erro ao excluir tarefa" });
+    }
+  };
+};

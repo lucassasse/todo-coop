@@ -1,5 +1,5 @@
 import express from "express";
-import { createList, getList, addTask, getTasks } from "../controllers/listController";
+import { createList, getList, addTask, getTasks, updateTaskStatus, deleteTask } from "../controllers/listController";
 import { Server } from "socket.io";
 
 export default (io: Server) => {
@@ -16,6 +16,12 @@ export default (io: Server) => {
 
   // Obter todas as tarefas de uma lista
   router.get("/listas/:codigo/tarefas", getTasks);
+
+  // Atualizar o status de uma tarefa
+  router.put("/listas/:codigo/tarefas/:id", updateTaskStatus(io));
+
+  // Deletar uma tarefa
+  router.delete("/listas/:codigo/tarefas/:id", deleteTask(io));
 
   return router;
 };
