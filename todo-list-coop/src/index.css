@@ -1,4 +1,4 @@
-ul {
+/* ul {
     list-style-type: none;
     padding: 0;
 }
@@ -17,7 +17,7 @@ input {
     border-radius: 5px;
 }
 
-button {
+.buttonAdd {
     padding: 8px 12px;
     background-color: #28a745;
     color: #fff;
@@ -26,6 +26,21 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.buttonAdd:hover {
     background-color: #218838;
 }
+
+.buttonDelete{
+    margin-left: 10px;
+    padding: 4px 8px;
+    color: red;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttonDelete:hover{
+    color: #fff;
+    background-color: brown;
+} */
