@@ -52,31 +52,38 @@ ul {
   max-width: 400px;
 }
 
-li {
+.task-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: var(--container-color);
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid var(--border-color);
   box-shadow: 2px 2px 5px var(--shadow-color);
   transition: all 0.3s ease-in-out;
 }
 
-li:hover {
+.task-item:hover {
   transform: scale(1.02);
 }
 
-li input[type="checkbox"] {
-  margin-right: 10px;
+.task-checkbox {
+  margin: 0;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  margin-right: 15px;
 }
 
 .task-content {
   flex-grow: 1;
   text-align: left;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task-completed {
@@ -105,18 +112,28 @@ button.buttonAdd:hover {
 }
 
 button.buttonDelete {
-  background: var(--secondary-button);
+  width: 30px;
+  height: 30px;
+  margin: 0 5px 0 10px;
+  background: var(--delete-button);
   color: white;
   border: none;
-  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button.buttonDelete:hover {
-  background: var(--secondary-button-hover);
+  background: var(--delete-button-hover);
   transform: scale(1.1);
+}
+
+.separator-line{
+  margin-top: 0;
 }
 
 @media (max-width: 768px) {
@@ -132,7 +149,7 @@ button.buttonDelete:hover {
     max-width: 100%;
   }
 
-  li {
+  .task-item {
     padding: 10px;
   }
 

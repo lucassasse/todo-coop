@@ -68,24 +68,42 @@ const TodoList: React.FC = () => {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        adicionarTarefa();
-      }
-    };
+    if (event.key === "Enter") {
+      adicionarTarefa();
+    }
+  };
 
   return (
     <div className="container">
       <h1>Lista de Tarefas ({codigo})</h1>
 
       <ul>
-        {tarefas.map((tarefa) => (
-          <li key={tarefa.id} style={{ opacity: tarefa.status ? 0.5 : 1 }}>
+        {tarefas.filter(tarefa => !tarefa.status).map((tarefa) => (
+          <li key={tarefa.id} className="task-item">
             <input
               type="checkbox"
               checked={tarefa.status}
               onChange={() => alternarStatusTarefa(tarefa.id)}
+              className="task-checkbox"
             />
-            {tarefa.descricao}
+            <span className="task-content">{tarefa.descricao}</span>
+            <button className="buttonDelete" onClick={() => deletarTarefa(tarefa.id)}>
+              X
+            </button>
+          </li>
+        ))}
+      </ul>
+      <h2 className="separator-line">_____________________________</h2>
+      <ul>
+        {tarefas.filter(tarefa => tarefa.status).map((tarefa) => (
+          <li key={tarefa.id} className="task-item">
+            <input
+              type="checkbox"
+              checked={tarefa.status}
+              onChange={() => alternarStatusTarefa(tarefa.id)}
+              className="task-checkbox"
+            />
+            <span className="task-content task-completed">{tarefa.descricao}</span>
             <button className="buttonDelete" onClick={() => deletarTarefa(tarefa.id)}>
               X
             </button>
@@ -101,7 +119,9 @@ const TodoList: React.FC = () => {
           onChange={(e) => setNovaTarefa(e.target.value)}
           onKeyPress={handleKeyPress}
         />
-        <button className="buttonAdd" onClick={adicionarTarefa}>Adicionar</button>
+        <button className="buttonAdd" onClick={adicionarTarefa}>
+          Adicionar
+        </button>
       </div>
     </div>
   );
